@@ -1,0 +1,53 @@
+/*
+ *  Android Emulators Plugin: A gradle plugin to manage Android emulators.
+ *  Copyright (C) 2018 The Catrobat Team
+ *  (<http://developer.catrobat.org/credits>)
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU Affero General Public License as
+ *  published by the Free Software Foundation, either version 3 of the
+ *  License, or (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU Affero General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Affero General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+plugins {
+    id 'java-gradle-plugin'
+    id 'com.gradle.plugin-publish' version '0.10.0'
+    id 'groovy'
+}
+
+dependencies {
+    compile gradleApi()
+    compile localGroovy()
+}
+
+group 'org.catrobat.gradle.androidemulators'
+version '0.1'
+
+gradlePlugin {
+    plugins {
+        androidEmulatorsPlugin {
+            id = 'org.catrobat.gradle.androidemulators'
+            implementationClass = 'org.catrobat.gradle.androidemulators.AndroidEmulatorsPlugin'
+        }
+    }
+}
+
+pluginBundle {
+    website = 'https://github.com/mfuchs/android-emulators-gradle'
+    vcsUrl = 'https://github.com/mfuchs/android-emulators-gradle'
+    tags = ['android', 'android emulator', 'android sdk', 'android ndk']
+
+    plugins {
+        androidEmulatorsPlugin {
+            displayName = 'Android Emulators Plugin'
+            description = 'Plugin that manages the installation and management of Android Emulators.'
+        }
+    }
+}

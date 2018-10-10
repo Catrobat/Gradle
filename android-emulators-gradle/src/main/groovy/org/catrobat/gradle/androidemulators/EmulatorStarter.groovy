@@ -47,7 +47,7 @@ class EmulatorStarter {
      * Starts the emulator asynchronously without checking for success.
      * @return EmulatorStarter process
      */
-    Process start(String avdName, Map environment) {
+    Process start(String avdName, Map environment, File logcat) {
         def emulator = new CommandBuilder(Utils.joinPaths(sdkDirectory, 'emulator', 'emulator'), '.exe')
 
         emulator.addArguments(['-avd', avdName])
@@ -56,6 +56,7 @@ class EmulatorStarter {
         emulator.addOptionalArguments(country, ['-prop', "persist.sys.country=$country"])
         emulator.addOptionalArguments(!showWindow, ['-no-window'])
         emulator.addOptionalArguments(!keepUserData, ['-wipe-data'])
+        emulator.addOptionalArguments(logcat, ['-logcat', '*', '-logcat-output', logcat.absolutePath])
         emulator.addArguments(additionalParameters)
 
         emulator.environment(environment).verbose().executeAsynchronously()

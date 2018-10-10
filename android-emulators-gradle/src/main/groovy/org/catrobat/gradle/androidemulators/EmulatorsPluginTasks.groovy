@@ -36,30 +36,16 @@ class EmulatorsPluginTasks {
     }
 
     void registerTasks() {
-        registerRetrieveLogcatTask()
         registerStartEmulatorTask()
         registerStopEmulatorTask()
         registerAdbDisableAnimationsGloballyTask()
         registerSdbResetAnimationsGloballyTask()
     }
 
-
-    private void registerRetrieveLogcatTask() {
-        registerTask('retrieveLogcat', {
-            description = 'Retrieves the logcat.txt from the device.'
-            group = 'android'
-
-            doLast {
-                def device = androidDevice()
-                def logcat = new File(project.rootDir, 'logcat.txt')
-                device.writeLogcat(logcat)
-            }
-        })
-    }
-
     private void registerStartEmulatorTask() {
         registerTask('startEmulator', {
-            description = 'Starts the android emulator. Use -Pemulator or EMULATOR_OVERRIDE to specify the emulator to use.'
+            description = 'Starts the android emulator. Use -Pemulator or EMULATOR_OVERRIDE to specify the emulator to use, ' +
+                          'and use -PlogcatFile to override the default logcat file logcat.txt.'
             group = 'android'
 
             doLast {
@@ -173,6 +159,11 @@ class EmulatorsPluginTasks {
         new AndroidDevice(adb(), androidSerial)
     }
 
+    @TypeChecked(TypeCheckingMode.SKIP)
+    private String propertyValue(String name, String defaultValue = null) {
+        project.properties.get(name, defaultValue)
+    }
+
     private void reuseRunningOrStartEmulator(String emulatorName) {
         def proc
         def device
@@ -191,7 +182,8 @@ class EmulatorsPluginTasks {
             lookupEmulator(emulatorName).emulatorParameters.each {
                 Utils.applySettings(it, emulatorStarter)
             }
-            proc = emulatorStarter.start(emulatorName, determineEnvironment())
+            def logcat = new File(propertyValue('logcatFile', 'logcat.txt'))
+            proc = emulatorStarter.start(emulatorName, determineEnvironment(), logcat)
 
             try {
                 device = androidDevice(adb().waitForSerial())

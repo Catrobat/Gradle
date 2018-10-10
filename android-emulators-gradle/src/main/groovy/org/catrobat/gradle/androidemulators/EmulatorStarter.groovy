@@ -29,7 +29,7 @@ class EmulatorStarter {
     String country = ''
     boolean showWindow = !Utils.isRunningOnJenkins()
     boolean keepUserData = false
-    List<String> additionalParameters = ['-gpu', 'swiftshader_indirect', '-no-boot-anim', '-noaudio']
+    List<String> additionalParameters = ['-gpu', 'swiftshader_indirect', '-no-boot-anim', '-noaudio', '-no-snapshot-save']
 
     EmulatorStarter(File sdkDirectory) {
         this.sdkDirectory = sdkDirectory

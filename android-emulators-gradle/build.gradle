@@ -17,9 +17,9 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 plugins {
-    id 'java-gradle-plugin'
-    id 'com.gradle.plugin-publish' version '0.10.0'
     id 'groovy'
+    id 'com.jfrog.bintray' version '1.8.4'
+    id 'maven-publish'
 }
 
 dependencies {
@@ -28,26 +28,35 @@ dependencies {
 }
 
 group 'org.catrobat.gradle.androidemulators'
-version '0.1'
+version '1.0.0'
 
-gradlePlugin {
-    plugins {
-        androidEmulatorsPlugin {
-            id = 'org.catrobat.gradle.androidemulators'
-            implementationClass = 'org.catrobat.gradle.androidemulators.AndroidEmulatorsPlugin'
+task sourcesJar(type: Jar) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+publishing {
+    publications {
+        plugin(MavenPublication) {
+            from components.java
+
+            artifact sourcesJar
         }
     }
 }
 
-pluginBundle {
-    website = 'https://github.com/mfuchs/android-emulators-gradle'
-    vcsUrl = 'https://github.com/mfuchs/android-emulators-gradle'
-    tags = ['android', 'android emulator', 'android sdk', 'android ndk']
+bintray {
+    user = project.properties['bintrayUser']
+    key = project.properties['bintrayKey']
+    publications = ['plugin']
+    dryRun = true
 
-    plugins {
-        androidEmulatorsPlugin {
-            displayName = 'Android Emulators Plugin'
-            description = 'Plugin that manages the installation and management of Android Emulators.'
-        }
+    pkg {
+        userOrg = 'catrobat'
+        repo = 'Gradle'
+        name = project.group
+        desc = 'Plugin that manages the installation and management of Android Emulators.'
+        licenses = ['AGPL-V3']
+        vcsUrl = 'https://github.com/Catrobat/Gradle.git'
     }
 }

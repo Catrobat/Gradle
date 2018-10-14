@@ -19,3 +19,4 @@
 
 rootProject.name = 'catrobat-gradle'
 include 'android-emulators-gradle'
+enableFeaturePreview('STABLE_PUBLISHING')

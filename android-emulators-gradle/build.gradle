@@ -28,7 +28,7 @@ dependencies {
 }
 
 group 'org.catrobat.gradle.androidemulators'
-version '1.0.0'
+version '1.0.1'
 
 task sourcesJar(type: Jar) {
     classifier = 'sources'
@@ -49,7 +49,7 @@ bintray {
     user = project.properties['bintrayUser']
     key = project.properties['bintrayKey']
     publications = ['plugin']
-    dryRun = true
+    dryRun = false
 
     pkg {
         userOrg = 'catrobat'

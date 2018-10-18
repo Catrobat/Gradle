@@ -39,7 +39,7 @@ class EmulatorsPluginTasks {
         registerStartEmulatorTask()
         registerStopEmulatorTask()
         registerAdbDisableAnimationsGloballyTask()
-        registerSdbResetAnimationsGloballyTask()
+        registerAdbResetAnimationsGloballyTask()
     }
 
     private void registerStartEmulatorTask() {
@@ -89,7 +89,7 @@ class EmulatorsPluginTasks {
         })
     }
 
-    private void registerSdbResetAnimationsGloballyTask() {
+    private void registerAdbResetAnimationsGloballyTask() {
         registerTask('adbResetAnimationsGlobally', {
             description = 'Reset android animations globally on the connected device'
             group = 'android'

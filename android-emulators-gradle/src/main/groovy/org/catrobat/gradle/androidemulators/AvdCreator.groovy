@@ -19,8 +19,6 @@
 
 package org.catrobat.gradle.androidemulators
 
-import groovy.json.JsonOutput
-import groovy.json.JsonSlurper
 import groovy.transform.TypeChecked
 
 /**
@@ -32,43 +30,32 @@ import groovy.transform.TypeChecked
 class AvdCreator {
     File sdkDirectory
     Map environment
-    File avdStore
-    File existingAvds
+    AvdStore avdStore
 
     AvdCreator(File sdkDirectory, Map environment) {
         this.sdkDirectory = sdkDirectory
         this.environment = environment
-
-        String avd_home = environment['ANDROID_AVD_HOME']
-        if (!avd_home) {
-            throw new IllegalStateException("The environment does not contain an ANDROID_AVD_HOME.")
-        }
-        this.avdStore = new File(avd_home)
-        this.existingAvds = new File(avdStore, 'avdstore.json')
+        this.avdStore = AvdStore.create(environment)
     }
 
     void createAvd(String avdName, AvdSettings settings) {
         checkSettings(settings)
 
-        storeAvd(avdName, settings)
+        avdStore.store(avdName, settings) {
+            def avdmanager = new CommandBuilder(Utils.joinPaths(sdkDirectory, 'tools', 'bin', 'avdmanager'), '.bat')
 
-        def avdmanager = new CommandBuilder(Utils.joinPaths(sdkDirectory, 'tools', 'bin', 'avdmanager'), '.bat')
+            avdmanager.addArguments(['create', 'avd', '-f', '-n', avdName])
+            avdmanager.addOptionalArguments(settings.sdcardSizeMb, ['-c', "${settings.sdcardSizeMb}M"])
+            avdmanager.addArguments(['-k', settings.systemImage])
+            avdmanager.addArguments(settings.arguments)
 
-        avdmanager.addArguments(['create', 'avd', '-f', '-n', avdName])
-        avdmanager.addOptionalArguments(settings.sdcardSizeMb, ['-c', "${settings.sdcardSizeMb}M"])
-        avdmanager.addArguments(['-k', settings.systemImage])
-        avdmanager.addArguments(settings.arguments)
-
-        avdmanager.input('no\r\n').directory(avdStore).environment(environment).verbose()
-        avdmanager.execute()
-
-        // update the avd ini-file with the specified properties
-        def avdConfigFile = new IniFile(Utils.joinPaths(avdStore, avdName + '.avd', 'config.ini'))
-        avdConfigFile.updateValues(settings.hardwareProperties)
+            avdmanager.input('no\r\n').directory(avdStore.avdStore).environment(environment).verbose()
+            avdmanager.execute()
+        }
     }
 
     void reuseOrCreateAvd(String avdName, AvdSettings settings) {
-        if (!containsAvd(avdName, settings)) {
+        if (!avdStore.contains(avdName, settings)) {
             println("Create AVD")
             createAvd(avdName, settings)
         }
@@ -83,41 +70,5 @@ class AvdCreator {
 
         throw_if_null(settings.systemImage, 'systemImage')
         throw_if_null(settings.screenDensity, 'screenDensity')
-    }
-
-    private boolean containsAvd(String name, AvdSettings settings) {
-        def avds = readExistingAvds()
-        if (avds[name] != Utils.asMap(settings)) {
-            return false
-        }
-
-        avdDir(name).exists() && avdIni(name).exists()
-    }
-
-    private Map readExistingAvds() {
-        if (!existingAvds.exists() || !existingAvds.canRead()) {
-            return [:]
-        }
-
-        new JsonSlurper().parseText(existingAvds.text) as Map ?: [:]
-    }
-
-    void storeAvd(String name, AvdSettings settings) {
-        println("Storing avd [$name]")
-        avdDir(name).deleteDir()
-        avdIni(name).delete()
-
-        Map avds = readExistingAvds()
-        avds[name] = Utils.asMap(settings)
-        existingAvds.delete()
-        existingAvds << JsonOutput.toJson(avds)
-    }
-
-    private File avdDir(String name) {
-        new File(avdStore, "${name}.avd")
-    }
-
-    private File avdIni(String name) {
-        new File(avdStore, "${name}.ini")
     }
 }

@@ -44,6 +44,22 @@ class AvdStoreTest {
         assert avdStore.contains('android24', android24())
     }
 
+    @Test
+    void clearEmptiesTheStoreButKeepsUntrackedFiles() {
+        avdStore.store('android24', android24(), { createAvd('android24') })
+        createAvd('foo')
+        assert new File("$avdFolder.root/android24.avd").exists() == true
+        assert new File("$avdFolder.root/android24.ini").exists() == true
+
+        avdStore.clear()
+
+        assert !avdStore.existingAvds.exists()
+        assert new File("$avdFolder.root/android24.avd").exists() == false
+        assert new File("$avdFolder.root/android24.ini").exists() == false
+        assert new File("$avdFolder.root/foo.avd").exists() == true
+        assert new File("$avdFolder.root/foo.ini").exists() == true
+    }
+
     /**
      * Simulate the creation of AVDs.
      * The store itself only tracks the AVDs but does not create them.

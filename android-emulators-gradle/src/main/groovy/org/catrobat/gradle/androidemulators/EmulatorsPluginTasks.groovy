@@ -40,6 +40,7 @@ class EmulatorsPluginTasks {
         registerStopEmulatorTask()
         registerAdbDisableAnimationsGloballyTask()
         registerAdbResetAnimationsGloballyTask()
+        registerClearAvdStore()
     }
 
     private void registerStartEmulatorTask() {
@@ -76,7 +77,6 @@ class EmulatorsPluginTasks {
         })
     }
 
-
     private void registerAdbDisableAnimationsGloballyTask() {
         registerTask('adbDisableAnimationsGlobally', {
             description = 'Disables android animations globally on the connected device'
@@ -97,6 +97,17 @@ class EmulatorsPluginTasks {
             doLast {
                 logger.lifecycle(description)
                 androidDevice().resetAnimationsGlobally()
+            }
+        })
+    }
+
+    void registerClearAvdStore() {
+        registerTask('clearAvdStore', {
+            description = 'Clear the AVD store, keeping all untracked files'
+            group = 'android'
+
+            doLast {
+                AvdStore.create(determineEnvironment()).clear()
             }
         })
     }

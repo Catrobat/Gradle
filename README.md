@@ -24,13 +24,19 @@ This plugin allows to manage Android emulators via gradle:
 | `./gradlew startEmulator [-Pemulator=EMULATOR_NAME] [-PlogcatFile=LOGCAT_NAME]` | Creates the emulator if necessary and the starts it. If you configured multiple emulators you need to select which via `-Pemulator`. The logcat file is automatically stored as logcat.txt. |
 | `./gradlew stopEmulator` | Stops the first emulator it finds. Running multiple emulators at the same time is not supported. |
 | `./gradlew adbDisableAnimationsGlobally` | Turns-off animations of the first running emulator it finds. |
+| `./gradlew clearAvdStore` | Clears all AVDs in the AVD store, which can be useful to save space or to force their recreation. |
 
 ### Basic Emulator Managment
 
 Place the following lines in your build.gradle file.
 ```
-plugins {
-    id "org.catrobat.gradle.androidemulators" version "0.1"
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'org.catrobat.gradle.androidemulators:android-emulators-gradle:1.1.0'
+    }
 }
 
 // Place this at the very top.

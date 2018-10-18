@@ -75,6 +75,18 @@ class AvdStore {
         avdDir(name).exists() && avdIni(name).exists()
     }
 
+    /**
+     * Removes all AVDs in the store but keeps all untracked files.
+     */
+    void clear() {
+        readExistingAvds().keySet().each {
+            String name = (String) it
+            avdDir(name).deleteDir()
+            avdIni(name).delete()
+        }
+        existingAvds.delete()
+    }
+
     private Map readExistingAvds() {
         if (!existingAvds.exists() || !existingAvds.canRead()) {
             return [:]

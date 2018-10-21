@@ -60,7 +60,7 @@ class Adb {
         return androidSerial.toString().trim()
     }
 
-    String waitForSerial(int timeout=60) {
+    String waitForSerial(int timeout=120) {
         for (int i = 0; i < timeout; ++i) {
             try {
                 return getAndroidSerial()

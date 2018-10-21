@@ -75,6 +75,11 @@ class AvdStore {
         avdDir(name).exists() && avdIni(name).exists()
     }
 
+    List<String> emulators() {
+        def emulators = readExistingAvds().keySet() as List<String>
+        emulators.sort()
+    }
+
     /**
      * Removes all AVDs in the store but keeps all untracked files.
      */

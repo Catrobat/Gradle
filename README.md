@@ -25,6 +25,7 @@ This plugin allows to manage Android emulators via gradle:
 | `./gradlew stopEmulator` | Stops the first emulator it finds. Running multiple emulators at the same time is not supported. |
 | `./gradlew adbDisableAnimationsGlobally` | Turns-off animations of the first running emulator it finds. |
 | `./gradlew clearAvdStore` | Clears all AVDs in the AVD store, which can be useful to save space or to force their recreation. |
+| `./gradlew listEmulators` | Lists all emulators that can be started via startEmulator. |
 
 ### Basic Emulator Managment
 
@@ -35,7 +36,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'org.catrobat.gradle.androidemulators:android-emulators-gradle:1.1.0'
+        classpath 'org.catrobat.gradle.androidemulators:android-emulators-gradle:1.2.0'
     }
 }
 

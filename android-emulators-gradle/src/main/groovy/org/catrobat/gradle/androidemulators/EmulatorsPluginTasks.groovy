@@ -112,6 +112,21 @@ class EmulatorsPluginTasks {
         })
     }
 
+    void registerListEmulators() {
+        registerTask('listEmulators', {
+            description = 'List all emulators that can be stared via "./gradlew -Pemulator=NAME startEmulator"'
+            group = 'android'
+
+            doLast {
+                def emulators = AvdStore.create(determineEnvironment()).emulators()
+                println("Emulators:")
+                emulators.each {
+                    println("\t$it")
+                }
+            }
+        })
+    }
+
     private void registerTask(String name, @DelegatesTo(Task) Closure settings) {
         project.task(name, settings)
     }

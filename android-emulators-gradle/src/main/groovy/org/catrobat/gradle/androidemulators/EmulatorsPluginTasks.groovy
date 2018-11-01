@@ -36,7 +36,8 @@ class EmulatorsPluginTasks {
     }
 
     void registerTasks() {
-        registerStartEmulatorTask()
+        registerStartEmulatorTask('startEmulator', false)
+        registerStartEmulatorTask('startEmulatorWithAnimations', true)
         registerStopEmulatorTask()
         registerAdbDisableAnimationsGloballyTask()
         registerAdbResetAnimationsGloballyTask()
@@ -44,10 +45,11 @@ class EmulatorsPluginTasks {
         registerListEmulators()
     }
 
-    private void registerStartEmulatorTask() {
-        registerTask('startEmulator', {
+    private void registerStartEmulatorTask(String name, boolean withAnimations) {
+        registerTask(name, {
             description = 'Starts the android emulator. Use -Pemulator or EMULATOR_OVERRIDE to specify the emulator to use, ' +
-                          'and use -PlogcatFile to override the default logcat file logcat.txt.'
+                          'and use -PlogcatFile to override the default logcat file logcat.txt.' +
+                          (withAnimations ? ' Global animations are enabled automatically.' : ' Global animations are disabled automatically.')
             group = 'android'
 
             doLast {
@@ -56,7 +58,7 @@ class EmulatorsPluginTasks {
 
                 def avdCreator = new AvdCreator(sdkDirectory(), determineEnvironment())
                 avdCreator.reuseOrCreateAvd(emulatorName, emulatorExt.avdSettings)
-                reuseRunningOrStartEmulator(emulatorName)
+                reuseRunningOrStartEmulator(emulatorName, withAnimations)
             }
         })
     }
@@ -102,7 +104,7 @@ class EmulatorsPluginTasks {
         })
     }
 
-    void registerClearAvdStore() {
+    private void registerClearAvdStore() {
         registerTask('clearAvdStore', {
             description = 'Clear the AVD store, keeping all untracked files'
             group = 'android'
@@ -191,7 +193,7 @@ class EmulatorsPluginTasks {
         project.properties.get(name, defaultValue)
     }
 
-    private void reuseRunningOrStartEmulator(String emulatorName) {
+    private void reuseRunningOrStartEmulator(String emulatorName, boolean withAnimations) {
         def proc
         def device
 
@@ -226,6 +228,12 @@ class EmulatorsPluginTasks {
         } catch (BootIncompleteException e) {
             proc?.waitForOrKill(1)
             throw e
+        }
+
+        if (withAnimations) {
+            device.resetAnimationsGlobally()
+        } else {
+            device.disableAnimationsGlobally()
         }
     }
 }

@@ -21,9 +21,11 @@ This plugin allows to manage Android emulators via gradle:
 ### Gradle Commands
 | Command | Description |
 | --- | --- |
-| `./gradlew startEmulator [-Pemulator=EMULATOR_NAME] [-PlogcatFile=LOGCAT_NAME]` | Creates the emulator if necessary and the starts it. If you configured multiple emulators you need to select which via `-Pemulator`. The logcat file is automatically stored as logcat.txt. |
+| `./gradlew startEmulator [-Pemulator=EMULATOR_NAME] [-PlogcatFile=LOGCAT_NAME]` | Creates the emulator if necessary, then starts it, and disables animations globally. If you configured multiple emulators you need to select which via `-Pemulator`. The logcat file is automatically stored as logcat.txt. |
+| `./gradlew startEmulatorWithAnimations [-Pemulator=EMULATOR_NAME] [-PlogcatFile=LOGCAT_NAME]` | Like `startEmulator` but enables global animations. |
 | `./gradlew stopEmulator` | Stops the first emulator it finds. Running multiple emulators at the same time is not supported. |
 | `./gradlew adbDisableAnimationsGlobally` | Turns-off animations of the first running emulator it finds. |
+| `./gradlew adbResetAnimationsGlobally` | Turns-on animations of the first running emulator it finds. |
 | `./gradlew clearAvdStore` | Clears all AVDs in the AVD store, which can be useful to save space or to force their recreation. |
 | `./gradlew listEmulators` | Lists all emulators that can be started via startEmulator. |
 

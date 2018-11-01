@@ -41,6 +41,7 @@ class EmulatorsPluginTasks {
         registerAdbDisableAnimationsGloballyTask()
         registerAdbResetAnimationsGloballyTask()
         registerClearAvdStore()
+        registerListEmulators()
     }
 
     private void registerStartEmulatorTask() {
@@ -112,9 +113,9 @@ class EmulatorsPluginTasks {
         })
     }
 
-    void registerListEmulators() {
+    private void registerListEmulators() {
         registerTask('listEmulators', {
-            description = 'List all emulators that can be stared via "./gradlew -Pemulator=NAME startEmulator"'
+            description = 'List all emulators that can be started via "./gradlew -Pemulator=NAME startEmulator"'
             group = 'android'
 
             doLast {

@@ -27,12 +27,13 @@ class EmulatorStarter {
     String skin = ''
     String language = ''
     String country = ''
-    boolean showWindow = !Utils.isRunningOnJenkins()
+    boolean showWindow
     boolean keepUserData = false
     List<String> additionalParameters = ['-gpu', 'swiftshader_indirect', '-no-boot-anim', '-noaudio', '-no-snapshot-save']
 
-    EmulatorStarter(File sdkDirectory) {
+    EmulatorStarter(File sdkDirectory, boolean showWindow) {
         this.sdkDirectory = sdkDirectory
+        this.showWindow = showWindow
     }
 
     String getResolution() {

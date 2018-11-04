@@ -24,10 +24,6 @@ import org.apache.tools.ant.taskdefs.condition.Os
 
 @TypeChecked
 class Utils {
-    static boolean isRunningOnJenkins() {
-        'JENKINS_URL' in System.getenv()
-    }
-
     static File joinPaths(File file, String... paths) {
         paths.each{ String path ->
             file = new File(file, path)

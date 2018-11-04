@@ -207,7 +207,7 @@ class EmulatorsPluginTasks {
             // no device running, start one
             println('Start the emulator!')
 
-            def emulatorStarter = new EmulatorStarter(sdkDirectory())
+            def emulatorStarter = new EmulatorStarter(sdkDirectory(), !isInContinuousIntegrationMode())
             lookupEmulator(emulatorName).emulatorParameters.each {
                 Utils.applySettings(it, emulatorStarter)
             }
@@ -235,5 +235,9 @@ class EmulatorsPluginTasks {
         } else {
             device.disableAnimationsGlobally()
         }
+    }
+
+    private boolean isInContinuousIntegrationMode() {
+        'JENKINS_URL' in System.getenv() || project.hasProperty('ci')
     }
 }

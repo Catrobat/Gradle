@@ -207,12 +207,9 @@ class EmulatorsPluginTasks {
             // no device running, start one
             println('Start the emulator!')
 
-            def emulatorStarter = new EmulatorStarter(sdkDirectory(), !isInContinuousIntegrationMode())
-            lookupEmulator(emulatorName).emulatorParameters.each {
-                Utils.applySettings(it, emulatorStarter)
-            }
+            def emulatorStarter = lookupEmulator(emulatorName).emulatorParameters
             def logcat = new File(propertyValue('logcatFile', 'logcat.txt'))
-            proc = emulatorStarter.start(emulatorName, determineEnvironment(), logcat)
+            proc = emulatorStarter.start(emulatorName, sdkDirectory(), determineEnvironment(), logcat)
 
             try {
                 device = androidDevice(adb().waitForSerial())
@@ -235,9 +232,5 @@ class EmulatorsPluginTasks {
         } else {
             device.disableAnimationsGlobally()
         }
-    }
-
-    private boolean isInContinuousIntegrationMode() {
-        'JENKINS_URL' in System.getenv() || project.hasProperty('ci')
     }
 }

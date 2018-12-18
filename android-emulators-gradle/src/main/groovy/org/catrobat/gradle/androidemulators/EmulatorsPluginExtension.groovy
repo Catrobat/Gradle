@@ -45,9 +45,14 @@ import org.gradle.api.InvalidUserDataException
 @TypeChecked
 class EmulatorsPluginExtension {
     private boolean performInstallation = false
+    private boolean showEmulatorWindowDefault
     Map<String, EmulatorExtension> emulatorLookup = [:]
-    Map<String, Closure> emulatorTemplates = [:]
+    Map<String, List<Closure>> emulatorTemplates = [:]
     DependenciesExtension dependencies = new DependenciesExtension()
+
+    EmulatorsPluginExtension(boolean showEmulatorWindowDefault) {
+        this.showEmulatorWindowDefault = showEmulatorWindowDefault
+    }
 
     void dependencies(@DelegatesTo(DependenciesExtension) Closure settings) {
         Utils.applySettings(settings, dependencies)
@@ -61,6 +66,7 @@ class EmulatorsPluginExtension {
      * @param name The name the emulator should be referenced within gradle.
      *             This is also the name of the avd.
      * @param settings of the emulator
+     * @return the created emulator extension
      * @example
      *  emulator 'android24', {
      *      avd {
@@ -74,7 +80,7 @@ class EmulatorsPluginExtension {
      *      }
      *  }
      */
-    void emulator(String name, @DelegatesTo(EmulatorExtension) Closure settings) {
+    EmulatorExtension emulator(String name, @DelegatesTo(EmulatorExtension) Closure settings) {
         emulator(name, '', settings)
     }
 
@@ -83,22 +89,22 @@ class EmulatorsPluginExtension {
      * @param name
      * @param templateName Name of the emulatorTemplate to use. When empty no template is used.
      * @param settings
+     * @return the created emulator extension
      */
-    void emulator(String name, String templateName, @DelegatesTo(EmulatorExtension) Closure settings) {
+    EmulatorExtension emulator(String name, String templateName, @DelegatesTo(EmulatorExtension) Closure settings) {
+        if (!name) {
+            throw new InvalidUserDataException('The emulator needs a name!')
+        }
         if (emulatorLookup.containsKey(name)) {
             throw new InvalidUserDataException("There is already an emulator named [$name]!")
         }
 
-        Closure templateSettings = emulatorTemplates[templateName]
-        if (templateName && !templateSettings) {
-            throw new InvalidUserDataException("Unknown template name [$templateName] specified!")
-        }
+        emulatorTemplate(name, templateName, settings)
+        def e = new EmulatorExtension(showEmulatorWindowDefault)
+        emulatorTemplates[name].each {
+            Utils.applySettings(it, e)
 
-        def e = new EmulatorExtension()
-        if (templateSettings) {
-            Utils.applySettings(templateSettings, e)
         }
-        Utils.applySettings(settings, e)
 
         if (!e.avdSettings || !e.emulatorParameters) {
             throw new InvalidUserDataException("Specify both an 'avd' and a 'parameters' block for [$name]!")
@@ -109,6 +115,8 @@ class EmulatorsPluginExtension {
         if (this.performInstallation) {
             installEmulators()
         }
+
+        e
     }
 
     /**
@@ -120,10 +128,33 @@ class EmulatorsPluginExtension {
      * @param settings
      */
     void emulatorTemplate(String name, @DelegatesTo(EmulatorExtension) Closure settings) {
+        emulatorTemplate(name, '', settings)
+    }
+
+    /**
+     * Like emulatorTemplate(String, Closure) only that a settings template can be specified.
+     * @param name
+     * @param templateName Name of the emulatorTemplate to use. When empty no template is used.
+     * @param settings
+     * @return the create emulator extension
+     */
+    void emulatorTemplate(String name, String templateName, @DelegatesTo(EmulatorExtension) Closure settings) {
+        if (!name) {
+            throw new InvalidUserDataException('The template needs a name!')
+        }
+        if (name == templateName) {
+            throw new InvalidUserDataException("Template [$name] cannot refer to itself!")
+        }
         if (emulatorTemplates.containsKey(name)) {
             throw new InvalidUserDataException("There is already an emulator template named [$name]!")
         }
-        emulatorTemplates[name] = settings
+        if (templateName && !emulatorTemplates.containsKey(templateName)) {
+            throw new InvalidUserDataException("Unkown emulator template named [$name]!")
+        }
+
+        def templates = emulatorTemplates.get(templateName)?.collect() ?: []
+        templates.add(settings)
+        emulatorTemplates[name] = templates as List<Closure>
     }
 
     void install(boolean performInstallation) {

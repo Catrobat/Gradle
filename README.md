@@ -116,9 +116,13 @@ emulators {
         }
     }
 
-    emulator 'android25', 'englishTemplate', {
+    // Alternatively emulators can also act as template.
+    emulator 'android25uk', 'android24', {
         avd {
             systemImage = 'system-images;android-25;default;x86_64'
+        }
+        parameters {
+            country = 'UK'
         }
     }
 }

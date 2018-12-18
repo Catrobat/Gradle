@@ -23,7 +23,6 @@ import groovy.transform.TypeChecked
 
 @TypeChecked
 class EmulatorStarter {
-    File sdkDirectory
     String skin = ''
     String language = ''
     String country = ''
@@ -31,8 +30,7 @@ class EmulatorStarter {
     boolean keepUserData = false
     List<String> additionalParameters = ['-gpu', 'swiftshader_indirect', '-no-boot-anim', '-noaudio', '-no-snapshot-save']
 
-    EmulatorStarter(File sdkDirectory, boolean showWindow) {
-        this.sdkDirectory = sdkDirectory
+    EmulatorStarter(boolean showWindow) {
         this.showWindow = showWindow
     }
 
@@ -48,7 +46,7 @@ class EmulatorStarter {
      * Starts the emulator asynchronously without checking for success.
      * @return EmulatorStarter process
      */
-    Process start(String avdName, Map environment, File logcat) {
+    Process start(String avdName, File sdkDirectory, Map environment, File logcat) {
         def emulator = new CommandBuilder(Utils.joinPaths(sdkDirectory, 'emulator', 'emulator'), '.exe')
 
         emulator.addArguments(['-avd', avdName])

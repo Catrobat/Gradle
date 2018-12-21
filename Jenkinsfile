@@ -5,7 +5,6 @@ pipeline {
         docker {
             image 'openjdk:8-jdk'
             args '-v /var/local/container_shared/gradle_cache/$EXECUTOR_NUMBER:/home/user/.gradle -m=6.5G'
-            label 'LimitedEmulator'
         }
     }
 

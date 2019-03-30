@@ -45,14 +45,14 @@ import org.gradle.api.InvalidUserDataException
 @TypeChecked
 class EmulatorsPluginExtension {
     private boolean performInstallation = false
-    private boolean showEmulatorWindowDefault
+    boolean showWindow
     Map<String, EmulatorExtension> emulatorLookup = [:]
     Map<String, List<Closure>> emulatorTemplates = [:]
     private String defaultEmulator = ''
     DependenciesExtension dependencies = new DependenciesExtension()
 
     EmulatorsPluginExtension(boolean showEmulatorWindowDefault) {
-        this.showEmulatorWindowDefault = showEmulatorWindowDefault
+        this.showWindow = showEmulatorWindowDefault
     }
 
     void dependencies(@DelegatesTo(DependenciesExtension) Closure settings) {
@@ -101,7 +101,7 @@ class EmulatorsPluginExtension {
         }
 
         emulatorTemplate(name, templateName, settings)
-        def e = new EmulatorExtension(showEmulatorWindowDefault)
+        def e = new EmulatorExtension()
         emulatorTemplates[name].each {
             Utils.applySettings(it, e)
 

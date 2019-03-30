@@ -26,7 +26,7 @@ class AndroidEmulatorsPlugin implements Plugin<Project> {
 
     @Override
     void apply(Project project) {
-        boolean isInContinuousIntegrationMode = 'JENKINS_URL' in System.getenv() || project.hasProperty('ci')
+        boolean isInContinuousIntegrationMode = 'JENKINS_URL' in System.getenv()
         def extension = project.extensions.create('emulators', EmulatorsPluginExtension, !isInContinuousIntegrationMode)
         new EmulatorsPluginTasks(project, extension).registerTasks()
     }

@@ -26,13 +26,8 @@ class EmulatorStarter {
     String skin = ''
     String language = ''
     String country = ''
-    boolean showWindow
     boolean keepUserData = false
     List<String> additionalParameters = ['-gpu', 'swiftshader_indirect', '-no-boot-anim', '-noaudio', '-no-snapshot-save']
-
-    EmulatorStarter(boolean showWindow) {
-        this.showWindow = showWindow
-    }
 
     String getResolution() {
         skin
@@ -46,7 +41,7 @@ class EmulatorStarter {
      * Starts the emulator asynchronously without checking for success.
      * @return EmulatorStarter process
      */
-    Process start(String avdName, File sdkDirectory, Map environment, File logcat) {
+    Process start(String avdName, File sdkDirectory, Map environment, boolean showWindow, File logcat) {
         def emulator = new CommandBuilder(Utils.joinPaths(sdkDirectory, 'emulator', 'emulator'), '.exe')
 
         emulator.addArguments(['-avd', avdName])

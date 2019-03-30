@@ -127,6 +127,12 @@ emulators {
     }
 
     defaultEmulator = 'android24'
+
+    // By default the plugin tries to determine automatically whether to show the emulator window or to hide it.
+    // On Jenkins the emulator will be hidden, while it will be shown on local systems.
+    // You can change the default by setting showWindow.
+    // In any case you can hide the emulator window by using the parameter -Pci
+    showWindow = false
 }
 ```
 

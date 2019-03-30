@@ -25,11 +25,6 @@ import groovy.transform.TypeChecked
 class EmulatorExtension {
     AvdSettings avdSettings
     EmulatorStarter emulatorParameters
-    private boolean showEmulatorWindowDefault
-
-    EmulatorExtension(boolean showEmulatorWindowDefault) {
-        this.showEmulatorWindowDefault = showEmulatorWindowDefault
-    }
 
     /**
      * @param avdSettings settings of the avd to create, see AvdSettings.
@@ -47,7 +42,7 @@ class EmulatorExtension {
      */
     void parameters(@DelegatesTo(EmulatorStarter) Closure emulatorParameters) {
         if (!this.emulatorParameters) {
-            this.emulatorParameters = new EmulatorStarter(showEmulatorWindowDefault)
+            this.emulatorParameters = new EmulatorStarter()
         }
         Utils.applySettings(emulatorParameters, this.emulatorParameters)
     }

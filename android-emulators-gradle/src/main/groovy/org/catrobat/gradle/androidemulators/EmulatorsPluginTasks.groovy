@@ -193,6 +193,14 @@ class EmulatorsPluginTasks {
         project.properties.get(name, defaultValue)
     }
 
+    private boolean showWindow() {
+        if (project.hasProperty('ci')) {
+            return false
+        }
+
+        return ext.showWindow
+    }
+
     private void reuseRunningOrStartEmulator(String emulatorName, boolean withAnimations) {
         def proc
         def device
@@ -209,7 +217,7 @@ class EmulatorsPluginTasks {
 
             def emulatorStarter = lookupEmulator(emulatorName).emulatorParameters
             def logcat = new File(propertyValue('logcatFile', 'logcat.txt'))
-            proc = emulatorStarter.start(emulatorName, sdkDirectory(), determineEnvironment(), logcat)
+            proc = emulatorStarter.start(emulatorName, sdkDirectory(), determineEnvironment(), showWindow(), logcat)
 
             try {
                 device = androidDevice(adb().waitForSerial())

@@ -175,7 +175,7 @@ class EmulatorsPluginTasks {
             }
         }
 
-        fallbackEnv('ANDROID_AVD_HOME', env['WORKSPACE'] ?: project.rootDir.toPath())
+        fallbackEnv('ANDROID_AVD_HOME', project.buildDir)
         env
     }
 

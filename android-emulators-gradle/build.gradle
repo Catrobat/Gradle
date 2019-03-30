@@ -29,7 +29,7 @@ dependencies {
 }
 
 group 'org.catrobat.gradle.androidemulators'
-version '1.5.0'
+version '1.6.0'
 
 task sourcesJar(type: Jar) {
     classifier = 'sources'

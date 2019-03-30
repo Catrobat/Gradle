@@ -30,6 +30,7 @@ class AvdStore {
 
     AvdStore(File avdStore) {
         this.avdStore = avdStore
+        this.avdStore.mkdirs()
         this.existingAvds = new File(avdStore, 'avdstore.json')
     }
 

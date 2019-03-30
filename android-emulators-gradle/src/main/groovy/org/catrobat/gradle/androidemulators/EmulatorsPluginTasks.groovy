@@ -140,7 +140,7 @@ class EmulatorsPluginTasks {
     }
 
     private String emulatorName() {
-        String name = System.getenv()["EMULATOR_OVERRIDE"] ?: project.properties["emulator"]
+        String name = System.getenv()["EMULATOR_OVERRIDE"] ?: project.properties["emulator"] ?: ext.defaultEmulator
         if (name) {
             return name
         }

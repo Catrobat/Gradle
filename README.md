@@ -125,11 +125,14 @@ emulators {
             country = 'UK'
         }
     }
+
+    defaultEmulator = 'android24'
 }
 ```
 
 When you have configured multiple emulators you need to specify which emulator to start, for example,
 `./gradlew -Pemulator=android24 startEmulator`.
+Alternatively you can specify a `defaultEmulator`.
 
 ### Known Shortcomings
 * Only one emulator can be started at the same time.

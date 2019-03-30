@@ -48,6 +48,7 @@ class EmulatorsPluginExtension {
     private boolean showEmulatorWindowDefault
     Map<String, EmulatorExtension> emulatorLookup = [:]
     Map<String, List<Closure>> emulatorTemplates = [:]
+    private String defaultEmulator = ''
     DependenciesExtension dependencies = new DependenciesExtension()
 
     EmulatorsPluginExtension(boolean showEmulatorWindowDefault) {
@@ -163,6 +164,18 @@ class EmulatorsPluginExtension {
             installDependencies()
             installEmulators()
         }
+    }
+
+    String getDefaultEmulator() {
+        this.defaultEmulator
+    }
+
+    void setDefaultEmulator(String emulator) {
+        if (emulator && !(emulator in emulatorLookup)) {
+            throw new InvalidUserDataException("Invalid default emulator [$emulator], available emulators: ${emulatorLookup.keySet()}")
+        }
+
+        this.defaultEmulator = emulator
     }
 
     private void installDependencies() {

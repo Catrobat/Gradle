@@ -136,3 +136,15 @@ Alternatively you can specify a `defaultEmulator`.
 
 ### Known Shortcomings
 * Only one emulator can be started at the same time.
+
+### Development
+When developing it is beneficial to try your changes with an existing Android project.
+To do that increment the plugin version number and install the gradle plugin locally via `./gradlew publishToMavenLocal`.
+Afterwards you need to make sure the local maven repository is used in your Android project via
+
+```
+repositories {
+    mavenLocal()
+}
+```
+in the build.gradle file of your Android project.

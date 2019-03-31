@@ -65,7 +65,7 @@ emulators {
             screenDensity = 'xhdpi' // the plugin automatically maps xhdpi to the correct screen density
         }
 
-        // Paramters that are used to start the emulator.
+        // Parameters that are used to start the emulator.
         // Some sensible defaults are provided automatically, see EmulatorStarter.groovy
         parameters {
             resolution = '768x1280'

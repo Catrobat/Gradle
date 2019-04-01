@@ -116,7 +116,7 @@ class EmulatorsPluginExtension {
 
         // install necessary images if required
         if (this.performInstallation) {
-            installEmulator(e)
+            installEmulators()
         }
 
         e
@@ -164,8 +164,6 @@ class EmulatorsPluginExtension {
         this.performInstallation = performInstallation
         if (this.performInstallation) {
             installDependencies()
-            // If install = appears after emulators, retroactively install any emulators
-            //  we've already defined.
             installEmulators()
         }
     }
@@ -199,12 +197,11 @@ class EmulatorsPluginExtension {
     }
 
     private void installEmulators() {
-        emulatorLookup.forEach { k, v -> installEmulator(v as EmulatorExtension) }
-    }
-
-    private void installEmulator(EmulatorExtension emulator) {
         def installer = getInstaller()
         installer.writeLicenseFiles()
-        installer.installImage(emulator.avdSettings.systemImage)
+
+        emulatorLookup.each { k, v ->
+            installer.installImage(v.avdSettings.systemImage)
+        }
     }
 }

@@ -32,6 +32,7 @@ import org.gradle.internal.impldep.org.apache.commons.lang.SystemUtils
 class Installer {
     File androidSdk
     SdkManager sdkManager
+    Set<String> installed = []
 
     Installer(File androidSdk = null) {
         if (androidSdk) {
@@ -89,8 +90,20 @@ class Installer {
             return this
         }
 
+        // Filter out packages that have already been installed this run
+        packages = packages.grep { !installed.contains(it) }
+
+        // If there's no work left, exit early
+        if(packages.empty) {
+            return this
+        }
+
         println("Installing packages [$packages] to [$androidSdk]")
         sdkManager.install(packages)
+
+        // Record packages as installed
+        installed.addAll(packages)
+
         this
     }
 

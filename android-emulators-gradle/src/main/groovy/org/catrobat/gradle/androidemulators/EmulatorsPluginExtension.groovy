@@ -50,6 +50,7 @@ class EmulatorsPluginExtension {
     Map<String, List<Closure>> emulatorTemplates = [:]
     private String defaultEmulator = ''
     DependenciesExtension dependencies = new DependenciesExtension()
+    Installer installer = null
 
     EmulatorsPluginExtension(boolean showEmulatorWindowDefault) {
         this.showWindow = showEmulatorWindowDefault
@@ -113,8 +114,9 @@ class EmulatorsPluginExtension {
 
         emulatorLookup[name] = e
 
+        // install necessary images if required
         if (this.performInstallation) {
-            installEmulators()
+            installEmulator(e)
         }
 
         e
@@ -162,12 +164,21 @@ class EmulatorsPluginExtension {
         this.performInstallation = performInstallation
         if (this.performInstallation) {
             installDependencies()
+            // If install = appears after emulators, retroactively install any emulators
+            //  we've already defined.
             installEmulators()
         }
     }
 
     String getDefaultEmulator() {
         this.defaultEmulator
+    }
+
+    Installer getInstaller() {
+        if(installer == null) {
+            installer = new Installer()
+        }
+        return installer
     }
 
     void setDefaultEmulator(String emulator) {
@@ -179,7 +190,7 @@ class EmulatorsPluginExtension {
     }
 
     private void installDependencies() {
-        def installer = new Installer()
+        def installer = getInstaller()
 
         installer.writeLicenseFiles()
         installer.installSdk(dependencies.sdkSettings)
@@ -188,11 +199,12 @@ class EmulatorsPluginExtension {
     }
 
     private void installEmulators() {
-        def installer = new Installer()
-        installer.writeLicenseFiles()
+        emulatorLookup.forEach { k, v -> installEmulator(v as EmulatorExtension) }
+    }
 
-        emulatorLookup.each { k, v ->
-            installer.installImage(v.avdSettings.systemImage)
-        }
+    private void installEmulator(EmulatorExtension emulator) {
+        def installer = getInstaller()
+        installer.writeLicenseFiles()
+        installer.installImage(emulator.avdSettings.systemImage)
     }
 }

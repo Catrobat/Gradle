@@ -14,3 +14,7 @@ gradle-app.setting
 # gradle/wrapper/gradle-wrapper.properties
 
 .idea
+android-emulators-gradle.iml
+catrobat-gradle.iml
+local.properties
+android-emulators-gradle/android-emulators-gradle.iml

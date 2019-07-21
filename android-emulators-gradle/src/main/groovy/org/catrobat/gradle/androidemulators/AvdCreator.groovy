@@ -44,7 +44,7 @@ class AvdCreator {
         avdStore.store(avdName, settings) {
             def avdmanager = new CommandBuilder(Utils.joinPaths(sdkDirectory, 'tools', 'bin', 'avdmanager'), '.bat')
 
-            avdmanager.addArguments(['create', 'avd', '-f', '-verbose', '-n', avdName])
+            avdmanager.addArguments(['create', 'avd', '-f', '--verbose', '-n', avdName])
             avdmanager.addOptionalArguments(settings.sdcardSizeMb, ['-c', "${settings.sdcardSizeMb}M"])
             avdmanager.addArguments(['-k', settings.systemImage])
             avdmanager.addArguments(settings.arguments)

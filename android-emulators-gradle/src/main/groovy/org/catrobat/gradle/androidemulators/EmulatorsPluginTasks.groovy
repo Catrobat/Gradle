@@ -48,8 +48,9 @@ class EmulatorsPluginTasks {
     private void registerStartEmulatorTask(String name, boolean withAnimations) {
         registerTask(name, {
             description = 'Starts the android emulator. Use -Pemulator or EMULATOR_OVERRIDE to specify the emulator to use, ' +
-                          'and use -PlogcatFile to override the default logcat file logcat.txt.' +
-                          (withAnimations ? ' Global animations are enabled automatically.' : ' Global animations are disabled automatically.')
+                    'and use -PlogcatFile to override the default logcat file logcat.txt. ' +
+                    'For verbose mode use -Pverbose=true.' +
+                    (withAnimations ? ' Global animations are enabled automatically.' : ' Global animations are disabled automatically.')
             group = 'android'
 
             doLast {
@@ -168,7 +169,7 @@ class EmulatorsPluginTasks {
     private Map<String, String> determineEnvironment() {
         def env = new HashMap(System.getenv())
 
-        def fallbackEnv = {k, v ->
+        def fallbackEnv = { k, v ->
             if (!env.containsKey(k)) {
                 println("ENV: Setting unspecified $k to [$v]")
                 env[k.toString()] = v.toString()
@@ -190,7 +191,7 @@ class EmulatorsPluginTasks {
 
     @TypeChecked(TypeCheckingMode.SKIP)
     private String propertyValue(String name, String defaultValue = null) {
-        project.properties.get(name, defaultValue)
+        project.properties.getOrDefault(name, defaultValue)
     }
 
     private boolean showWindow() {
@@ -217,11 +218,12 @@ class EmulatorsPluginTasks {
 
             def emulatorStarter = lookupEmulator(emulatorName).emulatorParameters
             def logcat = new File(propertyValue('logcatFile', 'logcat.txt'))
-            proc = emulatorStarter.start(emulatorName, sdkDirectory(), determineEnvironment(), showWindow(), logcat)
+            def verbose =  (boolean) project.properties.getOrDefault('verbose', false)
+            proc = emulatorStarter.start(emulatorName, sdkDirectory(), determineEnvironment(), showWindow(), logcat, verbose)
 
             try {
                 device = androidDevice(adb().waitForSerial())
-            } catch(NoDeviceException e) {
+            } catch (NoDeviceException e) {
                 proc.waitForOrKill(1)
                 throw e
             }

@@ -21,8 +21,8 @@ This plugin allows to manage Android emulators via gradle:
 ### Gradle Commands
 | Command | Description |
 | --- | --- |
-| `./gradlew startEmulator [-Pemulator=EMULATOR_NAME] [-PlogcatFile=LOGCAT_NAME] [-Pci]` | Creates the emulator if necessary, then starts it, and disables animations globally. If you configured multiple emulators you need to select which via `-Pemulator`. The logcat file is automatically stored as logcat.txt. An emulator window will be shown by default, unless this runs on Jenkins or `-Pci` is used. |
-| `./gradlew startEmulatorWithAnimations [-Pemulator=EMULATOR_NAME] [-PlogcatFile=LOGCAT_NAME] [-Pci]` | Like `startEmulator` but enables global animations. |
+| `./gradlew startEmulator [-Pemulator=EMULATOR_NAME] [-PlogcatFile=LOGCAT_NAME] [-Pverbose=boolean] [-Pci]` | Creates the emulator if necessary, then starts it, and disables animations globally. If you configured multiple emulators you need to select which via `-Pemulator`. The logcat file is automatically stored as logcat.txt. An emulator window will be shown by default, unless this runs on Jenkins or `-Pci` is used. |
+| `./gradlew startEmulatorWithAnimations [-Pemulator=EMULATOR_NAME] [-PlogcatFile=LOGCAT_NAME] [-Pverbose=boolean] [-Pci]` | Like `startEmulator` but enables global animations. |
 | `./gradlew stopEmulator` | Stops the first emulator it finds. Running multiple emulators at the same time is not supported. |
 | `./gradlew adbDisableAnimationsGlobally` | Turns-off animations of the first running emulator it finds. |
 | `./gradlew adbResetAnimationsGlobally` | Turns-on animations of the first running emulator it finds. |
